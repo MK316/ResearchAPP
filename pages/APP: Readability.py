@@ -29,6 +29,7 @@ with tab1:
     """)
 
 # --- Tab 2: Gunning-Fog Index Calculator ---
+
 with tab2:
     st.markdown("## 📏 Gunning-Fog Index Calculator")
     st.markdown("Paste your English text below:")
@@ -43,21 +44,21 @@ with tab2:
         words = re.findall(r'\b\w+\b', text)
         num_words = len(words)
 
-        # More accurate syllable-based complexity detection
+        # Identify complex words (3+ syllables)
         complex_words = [word for word in words if textstat.syllable_count(word) >= 3]
         num_complex = len(complex_words)
 
         if num_sentences == 0 or num_words == 0:
-            return None, 0, 0, 0
+            return None, 0, 0, 0, []
 
         avg_sentence_length = num_words / num_sentences
         percent_complex_words = (num_complex / num_words) * 100
         fog_index = 0.4 * (avg_sentence_length + percent_complex_words)
 
-        return round(fog_index, 2), num_sentences, num_words, num_complex
+        return round(fog_index, 2), num_sentences, num_words, num_complex, complex_words
 
     if user_text:
-        fog, num_sents, num_words, num_complex = compute_gunning_fog_verbose(user_text)
+        fog, num_sents, num_words, num_complex, complex_words = compute_gunning_fog_verbose(user_text)
 
         st.markdown(f"""
         <h3 style='color:green;'>THE GUNNING FOG INDEX IS <span style='color:red;'>{fog}</span></h3>
@@ -68,3 +69,18 @@ with tab2:
         - The number of words was **{num_words}**  
         - The number of 3+ syllable words, <span style='color:blue;'>highlighted in blue</span>, was **{num_complex}**
         """, unsafe_allow_html=True)
+
+        # Highlight complex words in blue within the text
+        def highlight_complex_words(text, complex_words):
+            def replacer(match):
+                word = match.group(0)
+                if word.lower() in [w.lower() for w in complex_words]:
+                    return f"<span style='color:blue; font-weight:bold;'>{word}</span>"
+                return word
+
+            return re.sub(r'\b\w+\b', replacer, text)
+
+        highlighted_text = highlight_complex_words(user_text, complex_words)
+
+        st.markdown("#### ✨ Text with 3+ syllable words highlighted:")
+        st.markdown(f"<div style='line-height: 1.8;'>{highlighted_text}</div>", unsafe_allow_html=True)
