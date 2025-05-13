@@ -32,15 +32,15 @@ with tab2:
     st.markdown("## 📏 Gunning-Fog Index Calculator")
     st.markdown("Paste your English text below:")
 
-    user_text = st.text_area("Enter text here:", height=200)
+    user_text = st.text_area("✏️ Enter your text here:", height=200)
 
     def count_syllables(word):
-        """Rough syllable counter using regex and vowel clusters."""
+        """Estimate syllables by counting vowel groups."""
         word = word.lower()
         word = re.sub(r'[^a-z]', '', word)
         return max(1, len(re.findall(r'[aeiouy]+', word)))
 
-    def compute_gunning_fog(text):
+    def compute_gunning_fog_verbose(text):
         sentences = re.split(r'[.!?]', text)
         sentences = [s.strip() for s in sentences if s.strip()]
         num_sentences = len(sentences)
@@ -52,23 +52,23 @@ with tab2:
         num_complex = len(complex_words)
 
         if num_sentences == 0 or num_words == 0:
-            return None
+            return None, 0, 0, 0
 
         avg_sentence_length = num_words / num_sentences
         percent_complex_words = (num_complex / num_words) * 100
-
         fog_index = 0.4 * (avg_sentence_length + percent_complex_words)
-        return round(fog_index, 2)
+
+        return round(fog_index, 2), num_sentences, num_words, num_complex
 
     if user_text:
-        index = compute_gunning_fog(user_text)
-        if index is not None:
-            st.success(f"📊 Gunning-Fog Index: **{index}**")
-            st.caption("A score of 12+ indicates college-level difficulty.")
-        else:
-            st.warning("Please enter a valid passage.")
+        fog, num_sents, num_words, num_complex = compute_gunning_fog_verbose(user_text)
 
-# --- Tab 3: Placeholder ---
-with tab3:
-    st.markdown("### 🧩 APP3")
-    st.write("This space is reserved for an additional tool or app.")
+        st.markdown(f"""
+        <h3 style='color:green;'>THE GUNNING FOG INDEX IS <span style='color:red;'>{fog}</span></h3>
+        """, unsafe_allow_html=True)
+
+        st.markdown(f"""
+        - The number of major punctuation marks, e.g., <span style='color:red;'>[.]</span>, was **{num_sents}**  
+        - The number of words was **{num_words}**  
+        - The number of 3+ syllable words, <span style='color:blue;'>highlighted in blue</span>, was **{num_complex}**
+        """, unsafe_allow_html=True)
