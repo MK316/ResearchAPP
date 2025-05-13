@@ -82,5 +82,6 @@ with tab2:
 
         highlighted_text = highlight_complex_words(user_text, complex_words)
 
+        st.markdown("---")
         st.markdown("#### ✨ Text with 3+ syllable words highlighted:")
         st.markdown(f"<div style='line-height: 1.8;'>{highlighted_text}</div>", unsafe_allow_html=True)
