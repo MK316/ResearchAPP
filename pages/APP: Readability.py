@@ -45,6 +45,7 @@ with tab2:
     
     
     st.markdown("[Comparable online tool](http://gunning-fog-index.com/)")
+    st.markdown("---")
     st.markdown("Paste your English text below:")
 
     user_text = st.text_area("✏️ Enter your text here:", height=200)
