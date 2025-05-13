@@ -32,6 +32,19 @@ with tab1:
 
 with tab2:
     st.markdown("## 📏 Gunning-Fog Index Calculator")
+    st.caption("The Gunning-Fog Index estimates the number of years of formal education a person needs to easily understand a passage of English text. It focuses on sentence length and word complexity (specifically, multisyllabic words).")
+
+    st.markdown("""
+    | **Gunning-Fog Index** | **Reading Level**                |
+    |------------------------|----------------------------------|
+    | 6 – 8                  | Easy to read (standard texts)    |
+    | 9 – 12                 | Fairly difficult (high school)   |
+    | 13 – 17                | Difficult (college level)        |
+    | 18+                    | Very difficult (academic papers) |
+    """)
+    
+    
+    st.markdown("[Comparable online tool](http://gunning-fog-index.com/)")
     st.markdown("Paste your English text below:")
 
     user_text = st.text_area("✏️ Enter your text here:", height=200)
