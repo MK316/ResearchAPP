@@ -1,4 +1,5 @@
 import streamlit as st
+import textstat
 import re
 
 # --- Tabs ---
@@ -34,12 +35,6 @@ with tab2:
 
     user_text = st.text_area("✏️ Enter your text here:", height=200)
 
-    def count_syllables(word):
-        """Estimate syllables by counting vowel groups."""
-        word = word.lower()
-        word = re.sub(r'[^a-z]', '', word)
-        return max(1, len(re.findall(r'[aeiouy]+', word)))
-
     def compute_gunning_fog_verbose(text):
         sentences = re.split(r'[.!?]', text)
         sentences = [s.strip() for s in sentences if s.strip()]
@@ -48,7 +43,8 @@ with tab2:
         words = re.findall(r'\b\w+\b', text)
         num_words = len(words)
 
-        complex_words = [word for word in words if count_syllables(word) >= 3]
+        # More accurate syllable-based complexity detection
+        complex_words = [word for word in words if textstat.syllable_count(word) >= 3]
         num_complex = len(complex_words)
 
         if num_sentences == 0 or num_words == 0:
